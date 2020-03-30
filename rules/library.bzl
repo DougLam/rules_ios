@@ -379,17 +379,17 @@ def apple_library(name, library_tools = {}, export_private_headers = True, names
             tags = _MANUAL,
         )
 
-        # Add generate swift header to header maps
-        swift_hmap_name = name + "_swift_hmap"
+        # Add generated swift header to header maps for double quote imports
+        swift_doublequote_hmap_name = name + "_swift_doublequote_hmap"
         headermap(
-            name = swift_hmap_name,
+            name = swift_doublequote_hmap_name,
             namespace = namespace,
             hdrs = [generated_swift_headers_filegroup],
             hdr_providers = deps,
             flatten_headers = True,
             tags = _MANUAL,
         )
-        internal_deps.append(swift_hmap_name)
+        internal_deps.append(swift_doublequote_hmap_name)
 
     private_hmap_name = name + "_private_hmap"
     private_angled_hmap_name = name + "_private_angled_hmap"
@@ -434,8 +434,7 @@ def apple_library(name, library_tools = {}, export_private_headers = True, names
     headermap_copts.append("-I\"$(execpath :%s)\"" % public_hmap_name)
     headermap_copts.append("-I\"$(execpath :%s)\"" % private_angled_hmap_name)
     if swift_sources:
-        headermap_copts.append("-I\"$(execpath :%s)\"" % swift_hmap_name)
-        headermap_copts.append("-iquote\"$(execpath :%s)\"" % swift_hmap_name)
+        headermap_copts.append("-iquote\"$(execpath :%s)\"" % swift_doublequote_hmap_name)
     headermap_copts.append("-I.")
     headermap_copts.append("-iquote\"$(execpath :%s)\"" % private_hmap_name)
 
