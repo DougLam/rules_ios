@@ -371,11 +371,11 @@ def apple_library(name, library_tools = {}, export_private_headers = True, names
     internal_deps.append(public_hmap_name)
 
     if swift_sources:
-        generated_header_name = module_name + "-Swift.h"
+        generated_swift_header_name = module_name + "-Swift.h"
         generated_swift_headers_filegroup = name + "_swift_hdrs"
         native.filegroup(
             name = generated_swift_headers_filegroup,
-            srcs = [generated_header_name],
+            srcs = [generated_swift_header_name],
             tags = _MANUAL,
         )
 
@@ -435,6 +435,7 @@ def apple_library(name, library_tools = {}, export_private_headers = True, names
     headermap_copts.append("-I\"$(execpath :%s)\"" % private_angled_hmap_name)
     if swift_sources:
         headermap_copts.append("-I\"$(execpath :%s)\"" % swift_hmap_name)
+        headermap_copts.append("-iquote\"$(execpath :%s)\"" % swift_hmap_name)
     headermap_copts.append("-I.")
     headermap_copts.append("-iquote\"$(execpath :%s)\"" % private_hmap_name)
 
@@ -501,7 +502,7 @@ def apple_library(name, library_tools = {}, export_private_headers = True, names
         swift_library(
             name = swift_libname,
             module_name = module_name,
-            generated_header_name = generated_header_name,
+            generated_header_name = generated_swift_header_name,
             srcs = swift_sources,
             copts = swift_copts,
             deps = deps + internal_deps + lib_names,
@@ -516,7 +517,7 @@ def apple_library(name, library_tools = {}, export_private_headers = True, names
                 name = module_map + ".extended." + name,
                 destination = "%s.extended.modulemap" % name,
                 source = module_map,
-                swift_header = generated_header_name,
+                swift_header = generated_swift_header_name,
                 module_name = module_name,
                 tags = _MANUAL,
             )
