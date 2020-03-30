@@ -436,8 +436,7 @@ def apple_library(name, library_tools = {}, export_private_headers = True, names
     if swift_sources:
         headermap_copts.append("-I\"$(execpath :%s)\"" % swift_hmap_name)
     headermap_copts.append("-I.")
-    headermap_copts.append("-iquote")
-    headermap_copts.append("-I\"$(execpath :%s)\"" % private_hmap_name)
+    headermap_copts.append("-iquote\"$(execpath :%s)\"" % private_hmap_name)
 
     objc_copts += headermap_copts + [
         "-fmodules",
